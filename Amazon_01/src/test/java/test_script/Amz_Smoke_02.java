@@ -1,0 +1,48 @@
+package test_script;
+import java.io.IOException;
+import org.testng.Assert;
+import org.testng.annotations.Listeners;
+import org.testng.annotations.Test;
+
+import generics.ExcelUtilities;
+import generics.LaunchandQuit;
+import generics.ListenerClass;
+import pomobjectrepository.Amz_AddCart;
+import pomobjectrepository.Amz_Home;
+import pomobjectrepository.Amz_Login;
+import pomobjectrepository.Amz_WishList;
+/**
+ * 
+ * @author Kavita
+ *
+ */
+/* Amz_Smoke_02: Login->seraching->adding the product to wishlist->adding the product to cart->logout */
+@Listeners(ListenerClass.class)
+public class Amz_Smoke_02 extends LaunchandQuit
+{
+
+	@Test(dataProvider="LoginData",dataProviderClass=ExcelUtilities.class)
+	public void smoke_testcase_02(String UN,String PWD) throws IOException, InterruptedException
+	{
+		Amz_Login amzlogin_obj=new Amz_Login(driver); 	
+		amzlogin_obj.userName(UN);
+		amzlogin_obj.un_submit();
+		amzlogin_obj.password(PWD);
+		amzlogin_obj.signin();		
+		Amz_Home amzhome=new Amz_Home(driver);
+		amzhome.seraching_the_product();
+		amzhome.clickOnFirstShoes(driver);		
+		Thread.sleep(3000);
+		
+		Amz_WishList wishlist=new Amz_WishList(driver);
+		wishlist.addtowishlist();				
+		wishlist.wishlist_window_close();
+		
+		Amz_AddCart addcart=new Amz_AddCart(driver);
+		addcart.addtocart(driver);	
+		amzhome.mouseOver_account(driver);
+		amzhome.logout();
+		Assert.assertTrue(true);
+		
+	}	
+}
